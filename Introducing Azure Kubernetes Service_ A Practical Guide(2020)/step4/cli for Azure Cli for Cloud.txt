@@ -1,0 +1,19 @@
+
+# ------------------------------------------------------------------------
+
+MY_USER=***
+MY_PASS=***
+
+RESOURCE_GROUP_NAME=DevOps
+LOCATION="West Europe"
+
+sudo az login -u $MY_USER -p $MY_PASS
+sudo az group create --name $RESOURCE_GROUP_NAME --location "$LOCATION"
+
+# ------------------------------------------------------------------------
+
+KNAME=KAMAL
+
+sudo az aks create --resource-group $RESOURCE_GROUP_NAME \
+                   --name $KNAME --node-count 1 \
+                   --enable-addons monitoring --generate-ssh-keys

@@ -1,0 +1,11 @@
+<?php
+    $file=$_GET['file'] ; $output=null ;
+        
+    exec( "file /var/www/html/'$file'" , $output ) ;
+    
+    $isDirectory=( strpos( $output[0] , ': directory'       ) ||
+                   strpos( $output[0] , 'symbolic link to ' ) ) ;
+    
+    if ( $isDirectory ) echo 'directory' ;
+    else                echo      'file' ;
+?>

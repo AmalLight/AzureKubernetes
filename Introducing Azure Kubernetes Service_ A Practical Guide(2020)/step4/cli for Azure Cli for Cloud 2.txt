@@ -1,0 +1,56 @@
+
+# ------------------------------------------------------------------------
+# ------------------------------------------------------------------------
+
+MY_USER=***
+MY_PASS=***
+
+RESOURCE_GROUP_NAME=DevOps
+LOCATION="West Europe"
+
+sudo az login -u $MY_USER -p $MY_PASS
+sudo az group create --name $RESOURCE_GROUP_NAME --location "$LOCATION"
+
+# ------------------------------------------------------------------------
+# ------------------------------------------------------------------------
+
+KNAME=KAMAL
+
+sudo az aks create --resource-group $RESOURCE_GROUP_NAME \
+                   --name $KNAME --node-count 1 \
+                   --enable-addons monitoring --generate-ssh-keys
+
+sudo az aks get-credentials --resource-group $RESOURCE_GROUP_NAME --name $KNAME
+
+<<COMMENT
+
+Merged "xxx" as current context in /root/.kube/config
+
+COMMENT
+
+sudo kubectl get nodes
+
+sudo kubectl get pods --all-namespaces
+
+# ------------------------------------------------------------------------
+# ------------------------------------------------------------------------
+
+sudo az aks scale --resource-group $RESOURCE_GROUP_NAME --name $KNAME2 \
+                  --node-count 3 --nodepool-name nodepool1
+                  
+sudo az aks get-upgrades --resource-group $RESOURCE_GROUP_NAME --name $KNAME2 \
+                         --output table
+
+# ----------------------------------------------------------------------------------------------|
+# -- az aks upgrade --resource-group jcbaksrg01 --name jcbaksclu01 --kubernetesversion 1.14.5 --|
+# ----------------------------------------------------------------------------------------------|
+
+VERSION=1.19.7
+
+sudo az aks upgrade --resource-group $RESOURCE_GROUP_NAME --name $KNAME2 -k $VERSION
+
+sudo az aks show --resource-group $RESOURCE_GROUP_NAME --name $KNAME2 \
+                 --output table
+                 
+sudo az aks delete --resource-group $RESOURCE_GROUP_NAME --name $KNAME2
+

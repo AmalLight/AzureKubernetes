@@ -1,0 +1,29 @@
+
+# kubectl create namespace namespace1
+
+kind: Namespace
+apiVersion: v1
+metadata:
+    name: namespace1 labels:
+        name: namespace1
+    
+# kubectl apply -f namespace1.yaml
+# kubectl get namespace
+# kubectl delete namespace namespace1
+
+apiVersion: v1
+kind: Pod
+metadata:
+    name: app1-pod
+    labels:
+        app: app1
+spec:
+    containers:
+    - name: app1-container
+        image: nginx
+        
+ConfigMaps are a functionality in Kubernetes that helps with configuration management.
+
+kubectl create configmap
+kubectl create configmap app1-data –from-file app1-configs/
+kubectl create configmap app1-config --fromliteral=app1-config.app1name=myapp1

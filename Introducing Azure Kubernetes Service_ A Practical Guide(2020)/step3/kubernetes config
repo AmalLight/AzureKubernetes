@@ -1,0 +1,69 @@
+
+https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/.
+
+MY_USER=***
+MY_PASS=***
+AZURE_SUBSCRIPTION_NAME="***"
+
+RESOURCE_GROUP_NAME=DevOps
+LOCATION="West Europe"
+ACR_NAME_LOWERCASE=Resource1
+
+sudo az login -u $MY_USER -p $MY_PASS
+
+sudo az aks install-cli
+
+PATH_KB=/usr/local/bin
+
+# ----------------------------------------------------------------------------------------
+
+kubectl [command] [TYPE] [NAME] [flags]
+
+https://kubernetes.io/docs/reference/kubectl/kubectl/.
+
+sudo kubectl get deployments --namespace kube-system
+sudo kubectl describe deployment kube-dns --namespace kube-system
+
+# -------------------------------------|
+# -- Creating a Resource from Config --|
+# -------------------------------------|
+
+sudo kubectl apply -f https://k8s.io/examples/application/deployment.yaml
+sudo kubectl apply -f ./examples/nginx/nginx.yaml
+
+# --------------------------------------------------|
+# -- creating a deployment ngnix from ngnix image --|
+# --------------------------------------------------|
+
+sudo kubectl create deployment nginx --dry-run -o yaml --image nginx
+
+# ---------------------------|
+# -- Debugging Containers ---|
+# ---------------------------|
+
+sudo kubectl logs -l app=nginx                                   # associated with the resource app=nginx
+sudo kubectl exec -i -t nginx-deployment-5c678s55ff-b2xfk bash   # stressing nginx
+
+#Filter warning only
+kubectl get events --field-selector type=Warning
+
+#Filter no pod events only
+kubectl get events --field-selector involvedObject.kind!=Pod
+
+#Filter events for a single node named "minikube"
+kubectl get events --field-selector involvedObject.
+kind=Node,involvedObject.name=mi
+
+# ------------------------------------|
+# -- Common Operations with kubectl --|
+# ------------------------------------|---------------------------|
+source : https://kubernetes.io/docs/reference/kubectl/cheatsheet/
+ |
+ |
+ |___kubectl apply
+ |___kubectl get
+ |___kubectl describe
+ |___kubectl delete
+ |___kubectl exec
+ |___kubectl logs
+ 

@@ -1,0 +1,91 @@
+MY_USER=***
+MY_PASS=***
+
+RESOURCE_GROUP_NAME=***
+KNAME=***
+
+sudo az login -u $MY_USER -p $MY_PASS
+
+sudo az aks get-credentials --resource-group $RESOURCE_GROUP_NAME --name $KNAME
+
+snap install helm --classic
+
+# sudo kubectl apply -f helm-rbac.yml
+# >> clusterrolebinding.rbac.authorization.k8s.io/tiller created <<
+
+SUBJECT="/C=US/ST=Pennsylvania/L=Springfield/O=IAKS, Inc./OU=IT/CN=iaks.sh"
+
+# -subj arg : Sets subject name for new request or supersedes the subject name when processing a request.
+# The arg must be formatted as /type0=value0/type1=value1/type2=...,
+# characters may be escaped by \ (backslash), no spaces are skipped.
+
+openssl genrsa -out ca.key.pem 4096
+
+openssl req -key ca.key.pem -new -x509 -days 7300 -sha256 -out ca.cert.pem \
+                            -extensions v3_ca -subj "$SUBJECT"
+...
+..
+
+# init
+
+helm init \
+     --override 'spec.template.spec.containers[0].command={/tiller,--storage=secret}' \
+     --tiller-tls \
+     --tiller-tls-cert "./tiller.cert.pem" \
+     --tiller-tls-key "./tiller.key.pem" \
+     --tiller-tls-verify \
+     --tls-ca-cert "./ca.cert.pem" \
+     --service-account tiller
+
+# Error: unknown command "init" for "helm"
+#
+# Helm init has been removed from helm 3.0 :-). You don't need it anymore .
+# There is no more Tiller and the client
+# directories are initialised automatically when you start using helm .
+
+# ----------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------
+
+# for identify tiller
+# kubectl get deployments -n kube-system
+
+RESOURCE_GROUP_NAME=***
+KNAME=***
+
+sudo az login -u $MY_USER -p $MY_PASS
+
+sudo az aks create --resource-group $RESOURCE_GROUP_NAME \
+                   --name $KNAME --node-count 1 \
+                   --enable-addons monitoring --generate-ssh-keys
+
+sudo az aks get-credentials --resource-group $RESOURCE_GROUP_NAME --name $KNAME
+
+sudo helm repo add bitnami https://charts.bitnami.com/bitnami
+
+sudo helm repo list
+
+sudo helm install my-release bitnami/joomla
+
+# https://github.com/bitnami/charts/tree/master/bitnami/joomla
+
+# --------------------------------
+# --- UPDATE/UPGRADE FROM HELM ---
+# --------------------------------
+
+sudo helm create $MY_FOLDER
+
+sudo helm package ./$MY_FOLDER
+sudo helm push    ./$tg
+sudo helm update
+
+sudo helm install my-release ./$MY_FOLDER
+
+sudo helm upgrade --set voteFront.vote1Value=Cats,voteFront.vote2Value=Dogs $RELASE_NAME ./$MY_FOLDER
+
+sudo helm ls
+
+sudo helm rollback my-release $VERSION # downgrade
+sudo helm ls
+
+sudo helm delete my-release --purge
+

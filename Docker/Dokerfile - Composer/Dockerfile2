@@ -1,0 +1,10 @@
+FROM nginx
+
+COPY nginx.conf /etc/nginx/nginx.conf
+
+RUN set -eu ; \
+    set -x ; \
+    apt update ; \
+    apt install -y iproute2 ; \
+    apt install -y iputils-ping ; \
+    apt install -y vim.tiny ;

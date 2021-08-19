@@ -1,0 +1,7 @@
+<?php    
+    $dir=$_GET['dir'] ; $output=null ;
+    
+    exec( "ls /var/www/html/'$dir'" , $output ) ;
+    
+    foreach( $output as $result ) echo "$result|||" ;
+?>

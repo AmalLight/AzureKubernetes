@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.voteBack.appName | lower }}
+spec:
+  ports:
+    - port: {{ .Values.voteBack.service.port }}
+  selector:
+    app: {{ .Values.voteBack.appName }}

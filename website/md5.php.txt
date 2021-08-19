@@ -1,0 +1,7 @@
+<?php    
+    $dir=$_GET['dir'] ; $output=null ;
+    
+    exec( "md5sum /var/www/html/'$dir'" , $output ) ;
+    
+    foreach( $output as $result ) echo "$result" ;
+?>

@@ -1,0 +1,69 @@
+<?php
+    function writeMsg ( $command ) { $out=null ; exec( $command , $out ) ; return $out[ 0 ] ; }
+
+    echo "<br><h1 style='background-color:black;color:yellow;border:5px solid black;border-radius:15px;' >" ;
+    echo "BY SAMURAJ KAUMI</h1>" ;
+    
+    $home = $_GET[ 'home' ] ;
+
+    exec( "cat /var/www/html/template.php > /var/www/html/template.php.txt" ) ;
+    exec( "cat /var/www/html/ls.php       > /var/www/html/ls.php.txt"       ) ;
+    exec( "cat /var/www/html/ls2.php      > /var/www/html/ls2.php.txt"      ) ;
+    exec( "cat /var/www/html/ls3.php      > /var/www/html/ls3.php.txt"      ) ;
+    exec( "cat /var/www/html/md5.php      > /var/www/html/md5.php.txt"      ) ;
+    exec( "cat /var/www/html/stat.php     > /var/www/html/stat.php.txt"     ) ;
+    
+    echo "<p style='padding:25px;background-color:lightgray;border:5px solid black;border-radius:15px;' >" ;
+
+    $output = explode ( '|||' , writeMsg ( "php-cgi -f /var/www/html/ls.php dir=" . urlencode( $home ) ) ) ;
+    
+    echo "Home : /var/www/html/$home" ;
+    
+    foreach ( $output as $result ) echo "$result<br>" ;
+
+    echo "</p>" ;
+    echo "<p style='padding:25px;background-color:lightgray;border:5px solid black;border-radius:15px;' >" ;
+    
+    foreach ( $output as $result )
+    {
+        if ( strlen ( $result ) <= 0 ) continue ;
+        
+        $mix_result="$result" ;
+        
+        if ( strlen ( $home ) > 0 ) $mix_result="$home/$mix_result" ;
+        
+        echo "Mix Result : /var/www/html/$mix_result <br>" ;
+        
+        $output2 = writeMsg ( "php-cgi -f /var/www/html/stat.php file=" . urlencode ( $mix_result ) ) ;
+            
+        if ( ! ( $output2 == 'directory' ) )
+        {
+            echo "<a href='$mix_result' style='font-size:24px;color:black;' >" ;
+
+            $output3 = writeMsg ( "php-cgi -f ls2.php dir=" . urlencode ( $mix_result ) ) ;
+            $output4 = writeMsg ( "php-cgi -f ls3.php dir=" . urlencode ( $mix_result ) ) ;
+            #$output5 = writeMsg ( "php-cgi -f md5.php dir=" . urlencode ( $mix_result ) ) ;
+
+            echo str_replace ( $result , "<text style=color:blue >$result</text>" , $output3 ) ;
+            echo "</a><br>" ;
+            
+            echo "<text style='font-size:24px;color:black;' >Last</text> : "   ;
+            echo "<text style=color:red >" . $output4 ;
+            echo "</text>" ;
+            
+            #echo "<text style='font-size:24px;color:black;' >md5</text> : "   ;
+            #echo "<text style=color:red >" . explode ( ' ' , $output5 ) [ 0 ] ;
+            #echo "</text>" ;
+        }
+            
+        else
+        {
+            echo "<a href=template.php?home=" . urlencode ( $mix_result ) ;
+            echo " style='font-size:24px;color:black;' >"        ;
+            echo "<text style=color:blue >$mix_result</text> : " ;
+            echo "<text style=color:green>Directory</text>.</a>" ;
+        }
+            
+        echo "<br><br>" ;
+    }   echo     "</p>" ;
+?>

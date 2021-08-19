@@ -1,0 +1,94 @@
+# Use root/example as user/password credentials
+version: '3.1'
+
+services:
+
+  mongo:
+    networks:
+      proxy_set:
+        ipv4_address: 172.19.0.2
+    
+    image: mongo
+    volumes:
+      - ./mongodbdata:/data/db_mongo
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      
+# ---------------------------------------------------------- #
+# nmap -v -A 127.0.0.1
+      
+  db:
+     networks:
+      proxy_set:
+        ipv4_address: 172.19.0.3
+     
+     image: mysql
+     volumes:
+       - ./mysqldata:/data/db_mysql
+     environment:
+       MYSQL_ROOT_PASSWORD: root
+       MYSQL_DATABASE: testdb1
+       MYSQL_USER: testuser
+       MYSQL_PASSWORD: root
+     ports:
+       - 3306:3306
+       
+  phpmyadmin:
+    networks:
+      proxy_set:
+        ipv4_address: 172.19.0.4
+    
+    depends_on:
+      - db
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - 8081:80
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: root
+  
+  tomcat:
+    networks:
+      proxy_set:
+        ipv4_address: 172.19.0.5
+
+    depends_on:
+      - db
+    image: tomcat.dist
+    volumes:
+      - ./tomcatdata:/data/db_tomcat
+    restart: always
+    ports:
+      - 8080:8080
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: testdb1
+      MYSQL_USER: testuser
+      MYSQL_PASSWORD: root
+      
+# ---------------------------------------------------------- #
+      
+  ngnix:
+    networks:
+      proxy_set:
+        ipv4_address: 172.19.0.6
+    
+    image: nginx.config
+    volumes:
+      - ./nginxdata:/etc/nginx/templates
+    ports:
+      - "8082:80"
+      - "8083:8083"
+      
+# ---------------------------------------------------------- #
+
+networks:
+
+  proxy_set:
+    ipam:
+      config:
+        - subnet: 172.19.0.0/16

@@ -1,0 +1,31 @@
+Azure Cloud :
+        url-source :
+		[ ( https://www.youtube.com/watch?v=Ess4VaQzdWw ) :
+		  ( A Crash Course in Azure Kubernetes Services ) ]
+	Power :
+		Geo-replication
+
+	Architecure :
+
+		Master :
+			control manager for Azure
+			[ ( is like loadbalancer ) : ? ]
+
+		Node != Pod :
+			[ ( contain 1 pod for node or more ) : ? ] :
+				( remember to attach label ) : ( for reach it by cli )
+				( external storage auto shared ) : [ ( like rook-ceph ) : ? ]
+
+			[ kubelet : yes | kubeadm : ? | kubectl : ? ]
+			( kubeproxy : ? )
+                        ( Cadvisor : telemetry )
+			( only workers : ? )
+	using :
+		[ ( AKS Cluster && ACR Instance ) : ? | Cloud Shell ] :
+			[ AKS : ( Azure Kubernetes Service  -> ( managed pod    ) ]
+			[ ACR : ( Azure Container  Registry -> ( managed dock.. ) ]
+
+	About_the_path_s_files :
+                ( ( azure.cloud types of nginx as ingress controller     ) : ( choses or steps ? ) )
+		( ( azure.cloud common services types like load balancer ) : ( choses or steps ? ) )
+		

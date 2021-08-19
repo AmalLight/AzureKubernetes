@@ -1,0 +1,54 @@
+
+# --------------------------------|
+# -- Using Kubernetes Dashboard --|
+# --------------------------------|
+
+MY_USER=***
+MY_PASS=***
+
+RESOURCE_GROUP_NAME=DevOps
+LOCATION="West Europe"
+KNAME=KAMAL
+
+sudo az login -u $MY_USER -p $MY_PASS
+
+# sudo az group create --name $RESOURCE_GROUP_NAME --location "$LOCATION"
+
+sudo az aks create --resource-group $RESOURCE_GROUP_NAME \
+                   --name $KNAME --node-count 1 \
+                   --enable-addons monitoring --generate-ssh-keys
+
+sudo az aks get-credentials --resource-group $RESOURCE_GROUP_NAME --name $KNAME
+
+sudo kubectl get nodes
+
+sudo kubectl get pods --all-namespaces
+
+# ---------------------------------------------------------------------------------------------
+# -- CHANGE OF RESOURCE -----------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------
+
+RESOURCE_GROUP_NAME=***
+KNAME=***
+
+sudo az aks create --resource-group $RESOURCE_GROUP_NAME \
+                   --name $KNAME --node-count 1 \
+                   --enable-addons monitoring --generate-ssh-keys
+
+sudo az aks get-credentials --resource-group $RESOURCE_GROUP_NAME --name $KNAME
+
+# ---------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------
+
+sudo kubectl create clusterrolebinding kubernetes-dashboard \
+                    --clusterrole=cluster-admin \
+                    --serviceaccount=kubesystem:kubernetes-dashboard
+                    
+# >> clusterrolebinding.rbac.authorization.k8s.io/kubernetes-dashboard created <<
+
+sudo az aks browse --resource-group $RESOURCE_GROUP_NAME --name $KNAME
+
+# >> Merged "achilles-test" as current context in /tmp/tmpp5ogvjaj <<
+
+# i have need to be admin ( have an admin role ) , for resolve this issue .
+

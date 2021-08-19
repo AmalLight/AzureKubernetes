@@ -1,0 +1,38 @@
+
+MY_USER=***
+MY_PASS=***
+sudo az login -u $MY_USER -p $MY_PASS
+
+# -------------------------------------------------------------
+
+AZURE_SUBSCRIPTION_NAME="***"
+sudo az account set --subscription "$AZURE_SUBSCRIPTION_NAME"
+
+# -------------------------------------------------------------
+
+RESOURCE_GROUP_NAME=DevOps
+LOCATION="West Europe"
+sudo az group create --name $RESOURCE_GROUP_NAME --location "$LOCATION"
+
+# -------------------------------------------------------------
+
+ACR_NAME=Resource1
+TYPE=Basic
+sudo az acr create --resource-group $RESOURCE_GROUP_NAME --name $ACR_NAME --sku $TYPE
+
+# -------------------------------------------------------------
+
+ACR_NAME_LOWERCASE=resource1
+sudo az acr login --name $ACR_NAME_LOWERCASE
+
+# -------------------------------------------------------------
+
+echo FROM mcr.microsoft.com/hello-world > Dockerfile
+
+sudo az acr build --registry $ACR_NAME_LOWERCASE \
+                  --image sample/hello-world:v1 \
+                  --file Dockerfile .
+
+sudo az acr run --registry $ACR_NAME_LOWERCASE \
+                --cmd '$Registry/sample/hello-world:v1' /dev/null
+

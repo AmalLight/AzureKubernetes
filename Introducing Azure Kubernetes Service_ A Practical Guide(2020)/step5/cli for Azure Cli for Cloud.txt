@@ -1,0 +1,47 @@
+
+# --------------------------------------
+
+MY_USER=***
+MY_PASS=***
+
+LOCATION="West Europe"
+
+RESOURCE_GROUP_NAME=***
+KNAME=***
+
+sudo az login -u $MY_USER -p $MY_PASS
+
+# sudo az group create --name $RESOURCE_GROUP_NAME --location "$LOCATION"
+
+sudo az aks create --resource-group $RESOURCE_GROUP_NAME \
+                   --name $KNAME --node-count 1 \
+                   --enable-addons monitoring --generate-ssh-keys
+
+sudo az aks get-credentials --resource-group $RESOURCE_GROUP_NAME --name $KNAME
+
+sudo kubectl get nodes
+
+sudo kubectl get pods --all-namespaces
+
+# ---------------------------------------------------------------------------------------------
+
+sudo az aks list
+
+# Install/update the preview extension
+sudo az extension add --name aks-preview --debug
+
+sudo apt install -y python3-pip
+
+# Validate the version of the preview extension
+sudo az extension show --name aks-preview --query [version]
+
+# opposite to the prev. command
+sudo az extension remove --name aks-preview
+
+# set the Policy
+....
+
+# -----------------------------------------------------------------------------------------------------
+
+sudo az aks delete --resource-group $RESOURCE_GROUP_NAME --name $KNAME
+
